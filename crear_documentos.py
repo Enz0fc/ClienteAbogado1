@@ -260,9 +260,14 @@ def  FORM_DATOS_NUEVOS_PARA_TRABAJADOR(datos_cliente):
 
     agregar_item(document,"Entrevista realizada por",datos_cliente['Entrevista realizada por'])
 
+   # Crear párrafo para la firma alineado a la derecha
+    firma = document.add_paragraph()
+    firma.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+
     # Agregar línea horizontal (subrayado)
     run = firma.add_run("_________________________")
     run.font.size = Pt(12)
+
     # Agregar texto "FIRMA" debajo
     firma = document.add_paragraph()
     firma.alignment = WD_ALIGN_PARAGRAPH.RIGHT

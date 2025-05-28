@@ -243,12 +243,6 @@ def  FORM_DATOS_NUEVOS_PARA_TRABAJADOR(datos_cliente):
     run = firma.add_run("_________________________")
     run.font.size = Pt(12)
 
-    # Agregar texto "FIRMA" debajo
-    firma = document.add_paragraph()
-    firma.alignment = WD_ALIGN_PARAGRAPH.RIGHT
-    run = firma.add_run("FIRMA")
-    run.font.size = Pt(11)
-
     document.add_paragraph().add_run().add_break(WD_BREAK.PAGE)#SGTE HOJA
 
     #ubicacion del demandado
@@ -261,6 +255,18 @@ def  FORM_DATOS_NUEVOS_PARA_TRABAJADOR(datos_cliente):
 
     add_image_from_drive(document,datos_cliente['Adjunta Imagen de la Ubicacion de Google Maps de la empresa'],datos_cliente['Ubicacion de la empresa'])
     generar_y_insertar_qr(document,datos_cliente['Ubicacion de la empresa'])
+
+    document.add_paragraph() #salto de linea
+    document.add_paragraph() #salto de linea
+    document.add_paragraph() #salto de linea
+
+    agregar_item(document,"Entrevista realizada por",datos_cliente['Entrevista realizada por'])
+
+    # Agregar texto "FIRMA" debajo
+    firma = document.add_paragraph()
+    firma.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+    run = firma.add_run("FIRMA")
+    run.font.size = Pt(11)
     
     document.save(f'Generado/Formulario_Datos_{datos_cliente['Numero de Cedula']}.docx')
 

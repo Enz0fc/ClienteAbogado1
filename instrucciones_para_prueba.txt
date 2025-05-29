@@ -1,0 +1,12 @@
+1- Instalar Python con y darle a la opción de agregar al PATH antes de la instalacion en la interfaz de instalación
+2- Crear el proyecto desde la consola de Google cloud con la cuenta del cliente a ser utilizada
+3- En APIs y servicios (en la cuenta del usuario a guardar los documentos) habilitar las APIs de Google drive y google sheets
+4- En el apartado de credenciales, dar la opción y darle a ID de cliente de OAuth, luego elegir el tipo de aplicación 
+como App de escritorio y dar acceso publico en la pantalla de consentimiento (descargar el archivo JSON de la credencial y 
+cambiar el nombre a credentials.json)
+5- Las credenciales agregar al directorio donde se encuentran los ficheros main.py, crear_documentos.py 
+6- Ya instalado Python y descargados los ficheros, en cmd ir hasta el directorio y ejecutar el siguiente código
+para instalar las librerías:
+	pip install --upgrade google-api-python-client google-auth-oauthlib google-auth python-docx requests qrcode[pil] Pillow
+7- Y ahora ejecutar el siguiente código para correr el script:
+	python main.py

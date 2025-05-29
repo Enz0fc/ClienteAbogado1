@@ -1,4 +1,5 @@
 1- Instalar Python con y darle a la opción de agregar al PATH antes de la instalacion en la interfaz de instalación
+	https://www.python.org/downloads/
 2- Crear el proyecto desde la consola de Google cloud con la cuenta del cliente a ser utilizada
 3- En APIs y servicios (en la cuenta del usuario a guardar los documentos) habilitar las APIs de Google drive y google sheets
 4- En el apartado de credenciales, dar la opción y darle a ID de cliente de OAuth, luego elegir el tipo de aplicación 

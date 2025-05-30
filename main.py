@@ -163,46 +163,6 @@ def subir_archivos_a_drive(drive_service,carpeta_local, carpeta_drive_id):
 
 
 
-def limpiar_carpeta(ruta_carpeta, eliminar_subcarpetas=False):
-    """
-    Elimina todos los archivos de una carpeta local, con opción para eliminar subcarpetas.
-    
-    Args:
-        ruta_carpeta (str): Ruta absoluta o relativa de la carpeta a limpiar
-        eliminar_subcarpetas (bool): Si es True, también elimina subcarpetas y su contenido
-    
-    Returns:
-        tuple: (archivos_eliminados, errores)
-    """
-    archivos_eliminados = 0
-    errores = 0
-    
-    try:
-        # Verificar si la carpeta existe
-        if not os.path.exists(ruta_carpeta):
-            raise FileNotFoundError(f"La carpeta no existe: {ruta_carpeta}")
-        
-        # Recorrer todos los elementos en la carpeta
-        for nombre in os.listdir(ruta_carpeta):
-            ruta_completa = os.path.join(ruta_carpeta, nombre)
-            
-            try:
-                if os.path.isfile(ruta_completa):
-                    os.remove(ruta_completa)
-                    archivos_eliminados += 1
-                elif os.path.isdir(ruta_completa) and eliminar_subcarpetas:
-                    shutil.rmtree(ruta_completa)
-                    archivos_eliminados += 1  # Contamos la carpeta como un elemento eliminado
-            except Exception as e:
-                print(f"Error al eliminar {ruta_completa}: {str(e)}")
-                errores += 1
-        
-        return (archivos_eliminados, errores)
-    
-    except Exception as e:
-        print(f"Error general: {str(e)}")
-        return (0, 1)
-
 def main():
     # Obtener servicios autenticados
     sheets_service = get_authenticated_service('sheets', 'v4')
@@ -226,7 +186,7 @@ def main():
                 FORM_DATOS_NUEVOS_PARA_TRABAJADOR(cliente)
                 Carta_Poder(cliente)
                 Carta_Compromiso(cliente)
-                Desistimiento_de_reuncia(cliente)
+                Desistimiento_de_renuncia(cliente)
                 Nota_de_Renuncia(cliente)
                 documento_demanda(cliente)
                 subir_archivos_a_drive(drive_service,'Generado',Carpeta_Personal)   

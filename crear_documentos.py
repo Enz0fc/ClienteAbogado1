@@ -1,20 +1,30 @@
+import PyInstaller
 from docxtpl import DocxTemplate, InlineImage
-import re
 import uuid
 from PIL import Image
 from docx import Document
-from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_UNDERLINE, WD_BREAK
-from docx.enum.style import WD_STYLE_TYPE
-from docx.enum.text import WD_UNDERLINE
-from docx.shared import Pt, Inches, Cm, Mm
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.shared import Pt, Mm
 import requests
 from io import BytesIO
 from datetime import datetime
 import qrcode
 import os
+import sys
 import shutil
+import time
 
 
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        #PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
 
 
 
@@ -37,7 +47,6 @@ def obtener_fecha_formateada():
     
     return fecha_formateada
 
-from docx import Document
 
 def agregar_parrafo_con_negrita(doc, text, bold_phrases):
     """
@@ -94,6 +103,7 @@ def limpiar_carpeta(ruta_carpeta, eliminar_subcarpetas=False):
     
     try:
         # Verificar si la carpeta existe
+        ruta_carpeta = resource_path(ruta_carpeta)
         if not os.path.exists(ruta_carpeta):
             raise FileNotFoundError(f"La carpeta no existe: {ruta_carpeta}")
         
@@ -119,6 +129,7 @@ def limpiar_carpeta(ruta_carpeta, eliminar_subcarpetas=False):
         return (0, 1)
 
 def limpiar_documento(path):
+    path = resource_path(path)
     doc = Document(path)
 
     # Eliminar todos los párrafos
@@ -155,6 +166,7 @@ def generar_qr_inline(doc, enlace, ancho_mm=30):
 
     # Guardar QR como imagen temporal
     nombre_archivo = f"Img/qr_{uuid.uuid4().hex}.png"
+    nombre_archivo = resource_path(nombre_archivo)
     img.save(nombre_archivo)
 
     # Crear InlineImage
@@ -175,6 +187,7 @@ def generar_imagen_inline(doc,url):
     Devuelve la ruta local del archivo guardado.
     """
     nombre_archivo = f"Img/imagen_{uuid.uuid4().hex}.jpg"
+    nombre_archivo = resource_path(nombre_archivo)
 
     # Descargar el contenido
     url_valida = convertir_url_google_drive(url)
@@ -193,10 +206,12 @@ def generar_imagen_inline(doc,url):
         raise Exception("El contenido descargado no es una imagen válida") from e
 
     # Guardar imagen localmente
+    time.sleep(1)
     with open(nombre_archivo, 'wb') as f:
         f.write(response.content)
 
     return InlineImage(doc,nombre_archivo)
+
 
 
 def  FORM_DATOS_NUEVOS_PARA_TRABAJADOR(cliente):
@@ -235,9 +250,9 @@ def  FORM_DATOS_NUEVOS_PARA_TRABAJADOR(cliente):
     }
 
     fecha_actual = datetime.now().strftime('%d/%m/%Y')
-
-    doc = DocxTemplate('Plantilla/Plantillla_Formulario_Datos.docx')
-
+    ruta_abrir = resource_path('Plantilla/Plantillla_Formulario_Datos.docx')
+    doc = DocxTemplate(ruta_abrir)
+    time.sleep(5)
 
     imagen_actor = generar_imagen_inline(doc,'https://drive.google.com/open?id=1rO9qgzKcUCeyekHE16t8eFbxxU7V_IMq')
     link_ubicacion_actor = 'https://maps.app.goo.gl/gfjAkq5uewLpBV9QA'
@@ -257,11 +272,11 @@ def  FORM_DATOS_NUEVOS_PARA_TRABAJADOR(cliente):
 
     doc.render(contexto)
 
-    limpiar_carpeta('Img')
+    carpeta_limpiar = resource_path('Img')
+    limpiar_carpeta(carpeta_limpiar)
 
-    doc.save(f'Generado/Formulario_Datos_{contexto['ci']}.docx')
-
-
+    ruta_guardar = resource_path(f'Generado/Formulario_Datos_{contexto['ci']}.docx') 
+    doc.save(ruta_guardar)
 
 def  Carta_Poder(cliente):
     contexto = {
@@ -282,14 +297,15 @@ def  Carta_Poder(cliente):
         contexto['estado_civil']=contexto['estado_civil'][:-1]+'a'
 
 
-    doc = DocxTemplate('Plantilla/Carta_de_Poder.docx')
+    ruta_abrir = resource_path('Plantilla/Carta_de_Poder.docx')
+    doc = DocxTemplate(ruta_abrir)
 
 
 
     doc.render(contexto)
 
-
-    doc.save(f'Generado/Carta_de_Poder_{contexto['ci']}.docx')
+    ruta_guardar = resource_path(f'Generado/Carta_de_Poder_{contexto['ci']}.docx')
+    doc.save(ruta_guardar)
 
 def Carta_Compromiso(cliente):
    
@@ -303,13 +319,13 @@ def Carta_Compromiso(cliente):
         'ruc_empresa':cliente['Ruc de la empresa']
     }
 
-    doc = DocxTemplate('Plantilla/Carta_Compromiso.docx')
+    ruta_abrir = resource_path('Plantilla/Carta_Compromiso.docx')
+    doc = DocxTemplate(ruta_abrir)
 
     doc.render(contexto)
 
-
-    doc.save(f'Generado/Carta_Compromiso_{contexto['ci']}.docx')
-    
+    ruta_guardar = resource_path(f'Generado/Carta_Compromiso_{contexto['ci']}.docx') 
+    doc.save(ruta_guardar)
     
 def Desistimiento_de_renuncia(cliente):
     contexto = {
@@ -317,12 +333,13 @@ def Desistimiento_de_renuncia(cliente):
         'ci': cliente['Numero de Cedula']
     }
 
-    doc = DocxTemplate('Plantilla/Desistimiento_de_Renuncia.docx')
+    ruta_abrir = resource_path('Plantilla/Desistimiento_de_Renuncia.docx')
+    doc = DocxTemplate(ruta_abrir)
 
     doc.render(contexto)
 
-
-    doc.save(f'Generado/Desistimiento_de_renuncia_{contexto['ci']}.docx')
+    ruta_cerrar = resource_path(f'Generado/Desistimiento_de_renuncia_{contexto['ci']}.docx')
+    doc.save(ruta_cerrar)
 
 def Nota_de_Renuncia(cliente):
     contexto = {
@@ -332,15 +349,17 @@ def Nota_de_Renuncia(cliente):
         'ruc_empresa':cliente['Ruc de la empresa']
     }
 
-    doc = DocxTemplate('Plantilla/Nota_de_Renuncia.docx')
+    ruta_abrir = resource_path('Plantilla/Nota_de_Renuncia.docx')
+    doc = DocxTemplate(ruta_abrir)
 
     doc.render(contexto)
 
-
-    doc.save(f'Generado/Nota_de_Renuncia_{contexto['ci']}.docx')
+    ruta_cerrar = resource_path(f'Generado/Nota_de_Renuncia_{contexto['ci']}.docx')
+    doc.save(ruta_cerrar)
     
 def documento_demanda(datos_cliente):
-    doc = limpiar_documento('Plantilla/documento_demanda.docx')
+    ruta_abrir = resource_path('Plantilla/documento_demanda.docx')
+    doc = limpiar_documento(ruta_abrir)
     #estilos
     style = doc.styles['Normal']
     font = style.font
@@ -441,6 +460,6 @@ def documento_demanda(datos_cliente):
     p12 = f'SE RECLAMA UNA INDEMNIZACIÓN POR DAÑO MORAL por el no pago al seguro social obligatorio por el salario REAL PERCIBIDO DE GS. {datos_cliente['CUANTO ERA SALARIO. Mensual, semanal, diario?']} Y POR TODO EL TIEMPO QUE DURE LA RELACION LABORAL, perjudicando de sobremanera al trabajador pues esta falta de aportes le perjudica en su futura jubilación y le causa un daño irreparable, pues como bien es sabido cientos de trabajadores PARAGUAYOS, son explotados y en su vejez no acceden a la jubilación por el incumplimiento de las normativas laborales. SE RECLAMA UNA INDEMNIZACIÓN DE GS. 500.000.000 (GUARANÍES QUINIENTOS MILLONES), POR EL DAÑO MORAL CAUSADO DENTRO DEL CONTRATO DE TRABAJO Y LA RELACIÓN LABORAL ANTE EL NO PAGO DE LA SEGURIDAD SOCIAL. '
     agregar_parrafo_con_negrita(doc,p12,['SE RECLAMA UNA INDEMNIZACIÓN DE GS. 500.000.000 (GUARANÍES QUINIENTOS MILLONES),'])
     
-    
-    doc.save(f'Generado/Demanda {datos_cliente['Nombres y Apellidos completos como esta en tu Cedula.'].split()[0]} contra {datos_cliente['Empresa en la que trabajo <Razon Social>']}.docx')
+    ruta_cerrar = resource_path(f'Generado/Demanda {datos_cliente['Nombres y Apellidos completos como esta en tu Cedula.'].split()[0]} contra {datos_cliente['Empresa en la que trabajo <Razon Social>']}.docx')
+    doc.save(ruta_cerrar)
     

@@ -2,8 +2,7 @@ from docxtpl import DocxTemplate, InlineImage
 import uuid
 from PIL import Image
 from docx import Document
-from docx.enum.text import WD_ALIGN_PARAGRAPH
-from docx.shared import Pt, Mm
+from docx.shared import Mm
 import requests
 from io import BytesIO
 from datetime import datetime
@@ -54,43 +53,6 @@ def obtener_fecha_formateada():
     return fecha_formateada
 
 
-def agregar_parrafo_con_negrita(doc, text, bold_phrases):
-    """
-    Agrega un párrafo al documento con ciertas palabras/frases en negrita.
-    
-    :param doc: Objeto Document de python-docx.
-    :param text: Texto completo del párrafo.
-    :param bold_phrases: Lista de palabras o frases que deben ir en negrita.
-    """
-    paragraph = doc.add_paragraph()
-    current_pos = 0
-
-    # Ordenar por longitud inversa para evitar problemas de solapamiento
-    sorted_bolds = sorted(bold_phrases, key=len, reverse=True)
-    
-    while current_pos < len(text):
-        match = None
-        match_start = len(text)
-        
-        for phrase in sorted_bolds:
-            idx = text.find(phrase, current_pos)
-            if idx != -1 and idx < match_start:
-                match = phrase
-                match_start = idx
-        
-        if match:
-            if match_start > current_pos:
-                # Texto normal antes de la frase en negrita
-                paragraph.add_run(text[current_pos:match_start])
-            # Frase en negrita
-            bold_run = paragraph.add_run(match)
-            bold_run.bold = True
-            current_pos = match_start + len(match)
-        else:
-            # Resto del texto sin negrita
-            paragraph.add_run(text[current_pos:])
-            break
-
 
 
 def limpiar_carpeta(ruta_carpeta, eliminar_subcarpetas=False):
@@ -133,23 +95,6 @@ def limpiar_carpeta(ruta_carpeta, eliminar_subcarpetas=False):
     except Exception as e:
         print(f"Error general: {str(e)}")
         return (0, 1)
-
-def limpiar_documento(path):
-    path = resource_path(path)
-    doc = Document(path)
-
-    # Eliminar todos los párrafos
-    for _ in range(len(doc.paragraphs)):
-        p = doc.paragraphs[0]
-        p._element.getparent().remove(p._element)
-
-    # Eliminar todas las tablas (si las hay)
-    for _ in range(len(doc.tables)):
-        t = doc.tables[0]
-        t._element.getparent().remove(t._element)
-
-    return doc
-
 
 def generar_qr_inline(doc, enlace, ancho_mm=30):
     """

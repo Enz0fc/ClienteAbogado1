@@ -205,12 +205,12 @@ def  FORM_DATOS_NUEVOS_PARA_TRABAJADOR(cliente):
     doc = DocxTemplate(ruta_abrir)
     time.sleep(5)
 
-    imagen_actor = generar_imagen_inline(doc,'https://drive.google.com/open?id=1rO9qgzKcUCeyekHE16t8eFbxxU7V_IMq')
-    link_ubicacion_actor = 'https://maps.app.goo.gl/gfjAkq5uewLpBV9QA'
-    qr_actor = generar_qr_inline(doc,'https://maps.app.goo.gl/gfjAkq5uewLpBV9QA')
-    imagen_demandado = generar_imagen_inline(doc,'https://drive.google.com/open?id=1lFkjyZLz4nmhXDDlmjGuaNdlQDKQQEAN')
-    link_ubicacion_demandado = 'https://maps.app.goo.gl/c77RjPCYUGQr3Ti17'
-    qr_demandado = generar_qr_inline(doc,'https://maps.app.goo.gl/c77RjPCYUGQr3Ti17')
+    imagen_actor = generar_imagen_inline(doc, cliente['Adjunta Imagen de la Ubicacion de Google Maps de casa Trabajador.'])
+    link_ubicacion_actor = cliente['Ubicacion de tu casa. Copia el link de la ubicacion de google']
+    qr_actor = generar_qr_inline(doc,link_ubicacion_actor)
+    imagen_demandado = generar_imagen_inline(doc,cliente['Adjunta Imagen de la Ubicacion de Google Maps de la empresa'])
+    link_ubicacion_demandado = cliente['Ubicacion de la empresa']
+    qr_demandado = generar_qr_inline(doc,link_ubicacion_demandado)
     imagenesYfecha = {'fecha_hoy': fecha_actual,
                     'imagen_actor':imagen_actor,
                     'link_ubicacion_actor': link_ubicacion_actor,

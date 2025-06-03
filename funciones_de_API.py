@@ -1,4 +1,5 @@
 import os
+
 from googleapiclient.discovery import build
 from google.oauth2.credentials import Credentials
 from google.oauth2 import service_account
@@ -14,9 +15,19 @@ SCOPES = [
     'https://www.googleapis.com/auth/drive'
 ]
 
-CEDULA_COLUMN = 'E'  # Columna donde están las cédulas (A, B, C,...)
+
+#---------------------------------------------------------------------
+CEDULA_COLUMN = 'C'  # Columna donde están las cédulas (A, B, C,...)
+
 CEDULA_FIELD_NAME = 'Numero de Cedula'  # Nombre del campo en la hoja de cálculo
 
+
+SPREADSHEET_ID = '1yEKmYtzW0gAxehkRNMNECFQF3Gtb3Y4cbyAGNFSY7bc' #real
+
+PARENT_FOLDER_ID = '1IW9SuKynd2QEw5N0bOqq_YBCj4HAHxlC' #real
+
+SHEET_NAME = 'Respuestas de formulario 1'
+#---------------------------------------------------------------------
 
 
 
